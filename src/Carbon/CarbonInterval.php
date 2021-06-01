@@ -446,6 +446,12 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($microseconds !== null) {
             $this->f = $microseconds / Carbon::MICROSECONDS_PER_SECOND;
         }
+
+        foreach (['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'] as $unit) {
+            if ($$unit < 0) {
+                $this->set($unit, $$unit);
+            }
+        }
     }
 
     /**
@@ -782,7 +788,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $milliseconds = 0;
         $microseconds = 0;
 
-        $pattern = '/(\d+(?:\.\d+)?)\h*([^\d\h]*)/i';
+        $pattern = '/(-?\d+(?:\.\d+)?)\h*([^\d\h]*)/i';
         preg_match_all($pattern, $intervalDefinition, $parts, PREG_SET_ORDER);
 
         while ([$part, $value, $unit] = array_shift($parts)) {
@@ -1060,7 +1066,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             return new static($interval);
         }
 
-        if (preg_match('/^(?:\h*\d+(?:\.\d+)?\h*[a-z]+)+$/i', $interval)) {
+        if (preg_match('/^(?:\h*-?\d+(?:\.\d+)?\h*[a-z]+)+$/i', $interval)) {
             return static::fromString($interval);
         }
 
@@ -1958,7 +1964,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             [$value, $unit] = [$unit, $value];
         }
 
-        if (\is_string($unit) && !preg_match('/^\s*\d/', $unit)) {
+        if (\is_string($unit) && !preg_match('/^\s*-?\d/', $unit)) {
             $unit = "$value $unit";
             $value = 1;
         }
