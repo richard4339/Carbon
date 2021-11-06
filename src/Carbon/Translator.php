@@ -147,7 +147,7 @@ class Translator extends Translation\Translator
      *
      * @return string
      */
-    public function trans($id, array $parameters = [], $domain = null, $locale = null)
+    public function trans($id, array $parameters = [], $domain = null, $locale = null): string
     {
         if ($domain === null) {
             $domain = 'messages';
